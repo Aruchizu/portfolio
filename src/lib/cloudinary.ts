@@ -43,7 +43,37 @@ function cleanContextValue(value: string | undefined): string {
   return (value ?? "").replace(/[=|]/g, " ").trim();
 }
 
+function slugifyTitle(title: string): string {
+  return (
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "photo"
+  );
+}
+
+function titleFromPublicId(publicId: string): string | undefined {
+  const filename = publicId.split("/").at(-1) ?? "";
+  const withoutSuffix = filename.replace(/-[a-z0-9]{6,}$/i, "");
+
+  if (!withoutSuffix || isUnhelpfulTitle(withoutSuffix)) {
+    return undefined;
+  }
+
+  return withoutSuffix
+    .replace(/[-_]+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 function getFallbackTitle(category: PhotoCategory, resource: CloudinaryResource) {
+  const publicIdTitle = titleFromPublicId(resource.public_id);
+
+  if (publicIdTitle) {
+    return publicIdTitle;
+  }
+
   const filename = resource.filename?.replace(/[-_]+/g, " ").trim();
 
   if (filename && !isUnhelpfulTitle(filename)) {
@@ -74,16 +104,20 @@ export async function uploadPhotoToCloudinary(
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  const safeTitle = cleanContextValue(metadata.title) || `${metadata.category} Photo`;
+  const uniqueSuffix = Math.random().toString(36).slice(2, 8);
 
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: process.env.CLOUDINARY_FOLDER ?? "aviation-portfolio",
         resource_type: "image",
-        use_filename: true,
-        unique_filename: true,
+        public_id: `${slugifyTitle(safeTitle)}-${uniqueSuffix}`,
+        display_name: safeTitle,
+        use_filename: false,
+        unique_filename: false,
         context: [
-          `title=${cleanContextValue(metadata.title)}`,
+          `title=${safeTitle}`,
           `caption=${cleanContextValue(metadata.caption)}`,
           `category=${metadata.category}`,
           `camera=${cleanContextValue(metadata.camera)}`,
