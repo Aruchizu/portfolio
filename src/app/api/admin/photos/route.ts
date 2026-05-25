@@ -5,7 +5,7 @@ import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import { hasCloudinaryConfig, uploadPhotoToCloudinary } from "@/lib/cloudinary";
 import { createPhoto } from "@/lib/photo-service";
-import { parsePhotoPayload } from "@/lib/photos";
+import { PHOTO_CATEGORIES, parsePhotoPayload, type PhotoCategory } from "@/lib/photos";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -63,9 +63,16 @@ export async function POST(request: Request) {
     }
 
     const baseTitle = String(formData.get("title") ?? "").trim();
+    const rawCategory = String(formData.get("category") ?? "Aviation");
+    const category: PhotoCategory = PHOTO_CATEGORIES.includes(
+      rawCategory as PhotoCategory,
+    )
+      ? (rawCategory as PhotoCategory)
+      : "Aviation";
+
     const metadataBase = {
       caption: String(formData.get("caption") ?? "").trim(),
-      category: formData.get("category"),
+      category,
       camera: String(formData.get("camera") ?? "").trim() || undefined,
       location: String(formData.get("location") ?? "").trim() || undefined,
       isFeatured: formData.has("isFeatured"),

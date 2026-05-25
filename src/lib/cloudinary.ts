@@ -1,6 +1,6 @@
 import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
-import type { PhotoCategory, PhotoRecord } from "./photos";
+import { PHOTO_CATEGORIES, type PhotoCategory, type PhotoRecord } from "./photos";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,6 +34,7 @@ type CloudinaryResource = {
   height: number;
   created_at: string;
   filename?: string;
+  tags?: string[];
   context?: {
     custom?: Record<string, string>;
   };
@@ -93,6 +94,24 @@ function isUnhelpfulTitle(title: string): boolean {
     /^image\s+\d+$/i.test(normalized) ||
     /^img[_\s-]?\d+$/i.test(normalized)
   );
+}
+
+function getCategoryFromResource(resource: CloudinaryResource): PhotoCategory {
+  const contextCategory = resource.context?.custom?.category;
+
+  if (PHOTO_CATEGORIES.includes(contextCategory as PhotoCategory)) {
+    return contextCategory as PhotoCategory;
+  }
+
+  const tagCategory = resource.tags
+    ?.find((tag) => tag.startsWith("category-"))
+    ?.replace("category-", "");
+
+  const matchedCategory = PHOTO_CATEGORIES.find(
+    (category) => category.toLowerCase() === tagCategory,
+  );
+
+  return matchedCategory ?? "Aviation";
 }
 
 export async function uploadPhotoToCloudinary(
@@ -163,13 +182,14 @@ export async function getCloudinaryPhotos(): Promise<PhotoRecord[]> {
   const result = await cloudinary.search
     .expression(`folder:${folder}/* AND tags=portfolio-photo`)
     .with_field("context")
+    .with_field("tags")
     .sort_by("created_at", "desc")
     .max_results(200)
     .execute();
 
   return ((result.resources ?? []) as CloudinaryResource[]).map((resource) => {
     const context = resource.context?.custom ?? {};
-    const category = (context.category || "Aviation") as PhotoCategory;
+    const category = getCategoryFromResource(resource);
     const createdAt = new Date(resource.created_at);
 
     return {

@@ -17,15 +17,16 @@ type PhotoGridProps = {
 };
 
 export function PhotoGrid({ photos }: PhotoGridProps) {
-  const [activeCategory, setActiveCategory] =
-    useState<PhotoCategory>("Aviation");
+  const [activeCategory, setActiveCategory] = useState<PhotoCategory>(
+    () => photos[0]?.category ?? "Aviation",
+  );
   const [activePhoto, setActivePhoto] = useState<PhotoRecord | null>(null);
 
   const filteredPhotos = useMemo(() => {
     return photos.filter((photo) => photo.category === activeCategory);
   }, [activeCategory, photos]);
 
-  const visiblePhotos = filteredPhotos.length > 0 ? filteredPhotos : photos;
+  const visiblePhotos = filteredPhotos;
 
   if (photos.length === 0) {
     return (
@@ -72,6 +73,19 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
           </button>
         ))}
       </div>
+
+      {visiblePhotos.length === 0 ? (
+        <div className="rounded border border-line bg-white px-5 py-10 text-center">
+          <p className="mono-label text-xs uppercase text-austrian-red">
+            {activeCategory}
+          </p>
+          <h3 className="mt-3 text-2xl font-semibold">No photos here yet.</h3>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-muted">
+            Upload photos with the {activeCategory} category selected and they
+            will appear here.
+          </p>
+        </div>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visiblePhotos.map((photo, index) => (
