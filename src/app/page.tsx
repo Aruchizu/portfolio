@@ -1,11 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, ImagePlus } from "lucide-react";
+import { ArrowUpRight, Download, ImagePlus, Mail } from "lucide-react";
 
 import { PhotoGrid } from "@/components/photo-grid";
 import { SectionLabel } from "@/components/section-label";
 import { SiteHeader } from "@/components/site-header";
 import { getPublishedPhotos } from "@/lib/photo-service";
+import {
+  ABOUT_SKILLS,
+  CONTACT_EMAIL,
+  CV_DOWNLOAD_PATH,
+  PROFILE_HIGHLIGHTS,
+  PROFILE_SUMMARY,
+} from "@/lib/profile";
 
 export const dynamic = "force-dynamic";
 
@@ -116,18 +123,65 @@ export default async function Home() {
 
       <section
         id="about"
-        className="mx-auto grid w-full max-w-7xl gap-6 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.8fr_1.2fr]"
+        className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.72fr_1.28fr]"
       >
         <SectionLabel index="03" label="about" />
-        <div>
+        <div className="min-w-0">
           <h2 className="text-3xl font-semibold sm:text-5xl">
-            Aviation, landscapes, and cars through my lens.
+            Behind the lens, there is design discipline too.
           </h2>
           <p className="mt-5 max-w-3xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
-            A focused space for the photos I want to show: aircraft in motion,
-            quiet landscapes, and cars with character. New work can be uploaded
-            anytime through the private dashboard.
+            {PROFILE_SUMMARY}
           </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={CV_DOWNLOAD_PATH}
+              download
+              className="flex h-12 items-center justify-center gap-2 rounded bg-austrian-red px-5 font-semibold text-white transition hover:bg-austrian-red-dark"
+            >
+              Download CV <Download size={17} />
+            </a>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="flex h-12 items-center justify-center gap-2 rounded border border-line bg-white px-5 font-semibold text-foreground transition hover:border-austrian-red hover:text-austrian-red"
+            >
+              Inquire <Mail size={17} />
+            </a>
+          </div>
+        </div>
+
+        <div className="grid gap-8 border-t border-line pt-8 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+          <div>
+            <p className="mono-label text-xs uppercase text-austrian-red">
+              current profile
+            </p>
+            <div className="mt-4 grid gap-3">
+              {PROFILE_HIGHLIGHTS.map((highlight) => (
+                <p
+                  key={highlight}
+                  className="border-b border-line pb-3 text-lg font-semibold text-foreground"
+                >
+                  {highlight}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="mono-label text-xs uppercase text-austrian-red">
+              beyond the lens
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {ABOUT_SKILLS.map((skill) => (
+                <span
+                  key={skill}
+                  className="rounded border border-line bg-white px-3 py-2 text-sm font-semibold text-foreground"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -147,7 +201,7 @@ export default async function Home() {
             </p>
           </div>
           <a
-            href="mailto:hello@example.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="flex h-12 items-center justify-center gap-2 rounded bg-austrian-red px-5 font-semibold text-white transition hover:bg-austrian-red-dark"
           >
             Send inquiry <ArrowUpRight size={17} />
