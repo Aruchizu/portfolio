@@ -33,10 +33,25 @@ type CloudinaryResource = {
   width: number;
   height: number;
   created_at: string;
+  filename?: string;
   context?: {
     custom?: Record<string, string>;
   };
 };
+
+function cleanContextValue(value: string | undefined): string {
+  return (value ?? "").replace(/[=|]/g, " ").trim();
+}
+
+function getFallbackTitle(category: PhotoCategory, resource: CloudinaryResource) {
+  const filename = resource.filename?.replace(/[-_]+/g, " ").trim();
+
+  if (filename && !/^[a-z0-9]{12,}$/i.test(filename)) {
+    return filename.replace(/\b\w/g, (letter) => letter.toUpperCase());
+  }
+
+  return `${category} Photo`;
+}
 
 export async function uploadPhotoToCloudinary(
   file: File,
@@ -53,15 +68,17 @@ export async function uploadPhotoToCloudinary(
       {
         folder: process.env.CLOUDINARY_FOLDER ?? "aviation-portfolio",
         resource_type: "image",
-        context: {
-          title: metadata.title,
-          caption: metadata.caption,
-          category: metadata.category,
-          camera: metadata.camera ?? "",
-          location: metadata.location ?? "",
-          isFeatured: String(metadata.isFeatured),
-          isPublished: String(metadata.isPublished),
-        },
+        use_filename: true,
+        unique_filename: true,
+        context: [
+          `title=${cleanContextValue(metadata.title)}`,
+          `caption=${cleanContextValue(metadata.caption)}`,
+          `category=${metadata.category}`,
+          `camera=${cleanContextValue(metadata.camera)}`,
+          `location=${cleanContextValue(metadata.location)}`,
+          `isFeatured=${String(metadata.isFeatured)}`,
+          `isPublished=${String(metadata.isPublished)}`,
+        ].join("|"),
         tags: [
           "portfolio-photo",
           `category-${metadata.category.toLowerCase()}`,
@@ -111,7 +128,7 @@ export async function getCloudinaryPhotos(): Promise<PhotoRecord[]> {
 
     return {
       id: resource.public_id,
-      title: context.title || resource.public_id.split("/").at(-1) || "Photo",
+      title: cleanContextValue(context.title) || getFallbackTitle(category, resource),
       caption: context.caption || "",
       category,
       imageUrl: resource.secure_url,
