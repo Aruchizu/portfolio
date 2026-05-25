@@ -121,13 +121,12 @@ export default async function Home() {
         <SectionLabel index="03" label="about" />
         <div>
           <h2 className="text-3xl font-semibold sm:text-5xl">
-            Clean edits, calm pacing, and a bias for real light.
+            Aviation, landscapes, and cars through my lens.
           </h2>
           <p className="mt-5 max-w-3xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
-            This portfolio is designed for aviation photography first, while
-            still giving landscapes and cars a refined place to land.
-            The admin upload flow keeps the gallery current without touching
-            code.
+            A focused space for the photos I want to show: aircraft in motion,
+            quiet landscapes, and cars with character. New work can be uploaded
+            anytime through the private dashboard.
           </p>
         </div>
       </section>
@@ -140,11 +139,11 @@ export default async function Home() {
           <div>
             <SectionLabel index="04" label="contact" />
             <h2 className="text-3xl font-semibold sm:text-5xl">
-              Ready for boarding.
+              Let&apos;s work together.
             </h2>
             <p className="mt-4 max-w-xl text-muted">
-              Add your preferred email or booking link here when you are ready
-              to publish the portfolio.
+              For shoots, collaborations, or project inquiries, reach out and
+              I&apos;ll get back to you.
             </p>
           </div>
           <a
