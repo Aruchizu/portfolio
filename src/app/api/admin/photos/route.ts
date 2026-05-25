@@ -75,10 +75,11 @@ export async function POST(request: Request) {
     const photos = [];
 
     for (const [index, file] of files.entries()) {
+      const categoryLabel = String(metadataBase.category || "Aviation");
       const title =
         files.length === 1
-          ? baseTitle || file.name.replace(/\.[^.]+$/, "")
-          : `${baseTitle || "Aviation Photo"} ${String(index + 1).padStart(
+          ? baseTitle || `${categoryLabel} Photo`
+          : `${baseTitle || `${categoryLabel} Photo`} ${String(index + 1).padStart(
               2,
               "0",
             )}`;

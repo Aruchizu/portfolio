@@ -46,11 +46,23 @@ function cleanContextValue(value: string | undefined): string {
 function getFallbackTitle(category: PhotoCategory, resource: CloudinaryResource) {
   const filename = resource.filename?.replace(/[-_]+/g, " ").trim();
 
-  if (filename && !/^[a-z0-9]{12,}$/i.test(filename)) {
+  if (filename && !isUnhelpfulTitle(filename)) {
     return filename.replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
   return `${category} Photo`;
+}
+
+function isUnhelpfulTitle(title: string): boolean {
+  const normalized = title.trim();
+
+  return (
+    normalized.length === 0 ||
+    /^[a-z0-9]{8,}$/i.test(normalized) ||
+    /^file\s+[a-z0-9]{4,}$/i.test(normalized) ||
+    /^image\s+\d+$/i.test(normalized) ||
+    /^img[_\s-]?\d+$/i.test(normalized)
+  );
 }
 
 export async function uploadPhotoToCloudinary(
@@ -128,7 +140,11 @@ export async function getCloudinaryPhotos(): Promise<PhotoRecord[]> {
 
     return {
       id: resource.public_id,
-      title: cleanContextValue(context.title) || getFallbackTitle(category, resource),
+      title:
+        cleanContextValue(context.title) &&
+        !isUnhelpfulTitle(cleanContextValue(context.title))
+          ? cleanContextValue(context.title)
+          : getFallbackTitle(category, resource),
       caption: context.caption || "",
       category,
       imageUrl: resource.secure_url,

@@ -130,6 +130,11 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
               <option key={category}>{category}</option>
             ))}
           </select>
+          <p className="-mt-2 text-xs leading-5 text-muted">
+            Category applies to every selected photo in this batch. Choose Cars
+            before uploading car photos, Landscape for scenery, or Aviation for
+            aircraft.
+          </p>
           <input
             name="location"
             placeholder="Location (optional)"
