@@ -13,7 +13,7 @@ type AdminUploadFormProps = {
 export function AdminUploadForm({ photos }: AdminUploadFormProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -32,8 +32,13 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
         throw new Error(data.error ?? "Upload failed.");
       }
 
-      setFile(null);
-      setMessage("Photo uploaded and published state saved.");
+      const data = await response.json();
+      setFiles([]);
+      setMessage(
+        `${data.photos?.length ?? 1} photo${
+          (data.photos?.length ?? 1) === 1 ? "" : "s"
+        } uploaded and saved.`,
+      );
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Upload failed.");
@@ -67,7 +72,7 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
           onDragOver={(event) => event.preventDefault()}
           onDrop={(event) => {
             event.preventDefault();
-            setFile(event.dataTransfer.files.item(0));
+            setFiles(Array.from(event.dataTransfer.files));
           }}
           className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded border border-dashed border-line bg-background px-4 text-center sm:min-h-52 sm:px-6"
           onClick={() => inputRef.current?.click()}
@@ -75,29 +80,40 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
           <ImagePlus className="mb-4 text-austrian-red" size={32} />
           <p className="font-semibold">Drop a photo here</p>
           <p className="mt-2 text-sm text-muted">
-            JPG, PNG, or WebP. Keep free-tier uploads under 10MB.
+            Upload one or many JPG, PNG, or WebP files. Keep each under 10MB.
           </p>
           <input
             ref={inputRef}
-            name="file"
+            name="files"
             type="file"
             accept="image/*"
+            multiple
             className="sr-only"
             required
-            onChange={(event) => setFile(event.target.files?.item(0) ?? null)}
+            onChange={(event) =>
+              setFiles(Array.from(event.target.files ?? []))
+            }
           />
-          {file ? (
-            <p className="mono-label mt-4 max-w-full break-all text-xs uppercase text-austrian-red">
-              {file.name}
-            </p>
+          {files.length > 0 ? (
+            <div className="mt-4 max-w-full space-y-1">
+              <p className="mono-label text-xs uppercase text-austrian-red">
+                {files.length} selected
+              </p>
+              <p className="truncate text-xs text-muted">
+                {files
+                  .slice(0, 3)
+                  .map((selectedFile) => selectedFile.name)
+                  .join(", ")}
+                {files.length > 3 ? "..." : ""}
+              </p>
+            </div>
           ) : null}
         </div>
 
         <div className="mt-5 space-y-4">
           <input
             name="title"
-            required
-            placeholder="Title"
+            placeholder="Title or batch name"
             className="h-12 w-full rounded border border-line px-4 outline-none focus:border-austrian-red"
           />
           <textarea
@@ -149,7 +165,7 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
           ) : (
             <Upload size={18} />
           )}
-          Upload photo
+          {files.length > 1 ? `Upload ${files.length} photos` : "Upload photo"}
         </button>
         {message ? <p className="mt-4 text-sm text-muted">{message}</p> : null}
       </form>

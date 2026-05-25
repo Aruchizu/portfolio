@@ -28,25 +28,42 @@ export async function POST(request: Request) {
 
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
+    const files = formData
+      .getAll("files")
+      .filter((file): file is File => file instanceof File && file.size > 0);
 
-    if (!(file instanceof File)) {
-      return NextResponse.json({ error: "Image file is required." }, { status: 400 });
-    }
-
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Only image uploads are allowed." }, { status: 400 });
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
+    if (files.length === 0) {
       return NextResponse.json(
-        { error: "Keep uploads under 10MB for the free Cloudinary plan." },
+        { error: "At least one image file is required." },
         { status: 400 },
       );
     }
 
-    const metadata = {
-      title: String(formData.get("title") ?? "").trim(),
+    if (files.length > 20) {
+      return NextResponse.json(
+        { error: "Upload up to 20 photos at a time." },
+        { status: 400 },
+      );
+    }
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        return NextResponse.json(
+          { error: "Only image uploads are allowed." },
+          { status: 400 },
+        );
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: "Keep each upload under 10MB for the free Cloudinary plan." },
+          { status: 400 },
+        );
+      }
+    }
+
+    const baseTitle = String(formData.get("title") ?? "").trim();
+    const metadataBase = {
       caption: String(formData.get("caption") ?? "").trim(),
       category: formData.get("category"),
       camera: String(formData.get("camera") ?? "").trim() || undefined,
@@ -55,26 +72,41 @@ export async function POST(request: Request) {
       isPublished: formData.has("isPublished"),
     };
 
-    const upload = await uploadPhotoToCloudinary(file, {
-      title: metadata.title,
-      caption: metadata.caption,
-      category: metadata.category as never,
-      camera: metadata.camera,
-      location: metadata.location,
-      isFeatured: metadata.isFeatured,
-      isPublished: metadata.isPublished,
-    });
-    const payload = parsePhotoPayload({
-      ...metadata,
-      imageUrl: upload.secure_url,
-      cloudinaryPublicId: upload.public_id,
-      width: upload.width,
-      height: upload.height,
-    });
+    const photos = [];
 
-    const photo = await createPhoto(payload);
+    for (const [index, file] of files.entries()) {
+      const title =
+        files.length === 1
+          ? baseTitle || file.name.replace(/\.[^.]+$/, "")
+          : `${baseTitle || "Aviation Photo"} ${String(index + 1).padStart(
+              2,
+              "0",
+            )}`;
 
-    return NextResponse.json({ photo }, { status: 201 });
+      const upload = await uploadPhotoToCloudinary(file, {
+        title,
+        caption: metadataBase.caption,
+        category: metadataBase.category as never,
+        camera: metadataBase.camera,
+        location: metadataBase.location,
+        isFeatured: metadataBase.isFeatured && index === 0,
+        isPublished: metadataBase.isPublished,
+      });
+
+      const payload = parsePhotoPayload({
+        ...metadataBase,
+        title,
+        isFeatured: metadataBase.isFeatured && index === 0,
+        imageUrl: upload.secure_url,
+        cloudinaryPublicId: upload.public_id,
+        width: upload.width,
+        height: upload.height,
+      });
+
+      photos.push(await createPhoto(payload));
+    }
+
+    return NextResponse.json({ photos }, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ error: error.issues[0]?.message }, { status: 400 });
