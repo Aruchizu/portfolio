@@ -3,7 +3,7 @@ export const CONTACT_EMAIL = "business.alfonsocnd@gmail.com";
 export const CV_DOWNLOAD_PATH = "/Alfonso_Raphael_Candia_CV.pdf";
 
 export const PROFILE_SUMMARY =
-  "I am Alfonso Raphael Candia, a multidisciplinary creative from Valenzuela City focused on photography, design, and social media visuals. My work started around content, posters, layouts, and image selection, which shaped how I frame aviation, landscapes, and cars today: clean, intentional, and built around strong visual rhythm. Outside photography, I also work with Figma, Canva, Lightroom, Procreate, and social media content management.";
+  "I am Alfonso Raphael Candia, a multidisciplinary creative from Valenzuela City focused on photography, design, and social media visuals. My work started around content, posters, layouts, and image selection, which shaped how I frame eroplano, tanawin, kotse, and tao today: clean, intentional, and built around strong visual rhythm. Outside photography, I also work with Figma, Canva, Lightroom, Procreate, and social media content management.";
 
 export const PROFILE_HIGHLIGHTS = [
   "Graphic designer and social media manager",

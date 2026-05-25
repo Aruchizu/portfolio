@@ -1,8 +1,38 @@
 import { z } from "zod";
 
-export const PHOTO_CATEGORIES = ["Aviation", "Landscape", "Cars"] as const;
+export const PHOTO_CATEGORIES = ["Eroplano", "Tanawin", "Kotse", "Tao"] as const;
+
+export const DEFAULT_PHOTO_CATEGORY = "Eroplano";
 
 export type PhotoCategory = (typeof PHOTO_CATEGORIES)[number];
+
+const CATEGORY_ALIASES: Record<string, PhotoCategory> = {
+  aviation: "Eroplano",
+  aircraft: "Eroplano",
+  airplane: "Eroplano",
+  plane: "Eroplano",
+  eroplano: "Eroplano",
+  landscape: "Tanawin",
+  scenery: "Tanawin",
+  tanawin: "Tanawin",
+  cars: "Kotse",
+  car: "Kotse",
+  kotse: "Kotse",
+  people: "Tao",
+  person: "Tao",
+  portrait: "Tao",
+  portraits: "Tao",
+  tao: "Tao",
+};
+
+export function normalizePhotoCategory(value: unknown): PhotoCategory {
+  const normalized = String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/^category-/, "");
+
+  return CATEGORY_ALIASES[normalized] ?? DEFAULT_PHOTO_CATEGORY;
+}
 
 export type PhotoRecord = {
   id: string;
@@ -24,7 +54,10 @@ export type PhotoRecord = {
 const photoPayloadSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(120),
   caption: z.string().trim().max(500).default(""),
-  category: z.enum(PHOTO_CATEGORIES),
+  category: z.preprocess(
+    (value) => normalizePhotoCategory(value),
+    z.enum(PHOTO_CATEGORIES),
+  ),
   imageUrl: z.string().url(),
   cloudinaryPublicId: z.string().trim().min(1),
   width: z.coerce.number().int().positive(),

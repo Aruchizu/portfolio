@@ -3,20 +3,21 @@ import { describe, expect, it } from "vitest";
 import {
   PHOTO_CATEGORIES,
   getPublicPhotos,
+  normalizePhotoCategory,
   parsePhotoPayload,
 } from "./photos";
 import { samplePhotos } from "./sample-photos";
 
 describe("photo helpers", () => {
   it("accepts the fixed v1 photography categories", () => {
-    expect(PHOTO_CATEGORIES).toEqual(["Aviation", "Landscape", "Cars"]);
+    expect(PHOTO_CATEGORIES).toEqual(["Eroplano", "Tanawin", "Kotse", "Tao"]);
   });
 
   it("normalizes admin photo payloads", () => {
     const payload = parsePhotoPayload({
       title: "  Final approach  ",
       caption: "A320 on short final",
-      category: "Aviation",
+      category: "Eroplano",
       imageUrl: "https://res.cloudinary.com/demo/image/upload/sample.jpg",
       cloudinaryPublicId: "portfolio/final-approach",
       width: 2400,
@@ -26,9 +27,17 @@ describe("photo helpers", () => {
     });
 
     expect(payload.title).toBe("Final approach");
-    expect(payload.category).toBe("Aviation");
+    expect(payload.category).toBe("Eroplano");
     expect(payload.isFeatured).toBe(true);
     expect(payload.isPublished).toBe(true);
+  });
+
+  it("maps old English categories and tags to Tagalog labels", () => {
+    expect(normalizePhotoCategory("Aviation")).toBe("Eroplano");
+    expect(normalizePhotoCategory("category-landscape")).toBe("Tanawin");
+    expect(normalizePhotoCategory("Cars")).toBe("Kotse");
+    expect(normalizePhotoCategory("People")).toBe("Tao");
+    expect(normalizePhotoCategory("unknown")).toBe("Eroplano");
   });
 
   it("returns only published photos with featured photos first", () => {
@@ -37,7 +46,7 @@ describe("photo helpers", () => {
         id: "1",
         title: "Hidden draft",
         caption: "",
-        category: "Cars",
+        category: "Kotse",
         imageUrl: "https://example.com/hidden.jpg",
         cloudinaryPublicId: "hidden",
         width: 1200,
@@ -51,7 +60,7 @@ describe("photo helpers", () => {
         id: "2",
         title: "Gate light",
         caption: "",
-        category: "Landscape",
+        category: "Tanawin",
         imageUrl: "https://example.com/gate.jpg",
         cloudinaryPublicId: "gate",
         width: 1200,
@@ -65,7 +74,7 @@ describe("photo helpers", () => {
         id: "3",
         title: "Red tail",
         caption: "",
-        category: "Aviation",
+        category: "Eroplano",
         imageUrl: "https://example.com/red-tail.jpg",
         cloudinaryPublicId: "red-tail",
         width: 1200,

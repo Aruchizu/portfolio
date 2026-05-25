@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import {
+  DEFAULT_PHOTO_CATEGORY,
   PHOTO_CATEGORIES,
   getCategoryCount,
   type PhotoCategory,
@@ -18,7 +19,7 @@ type PhotoGridProps = {
 
 export function PhotoGrid({ photos }: PhotoGridProps) {
   const [activeCategory, setActiveCategory] = useState<PhotoCategory>(
-    () => photos[0]?.category ?? "Aviation",
+    () => photos[0]?.category ?? DEFAULT_PHOTO_CATEGORY,
   );
   const [activePhoto, setActivePhoto] = useState<PhotoRecord | null>(null);
 
@@ -38,8 +39,8 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
           No photos uploaded yet.
         </h3>
         <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-muted sm:text-base">
-          Sign in to the admin page and upload your own aviation, landscape, and
-          car photos. The gallery will fill from your MongoDB and Cloudinary
+          Sign in to the admin page and upload your own eroplano, tanawin,
+          kotse, and tao photos. The gallery will fill from your Cloudinary
           uploads.
         </p>
         <Link
@@ -81,8 +82,8 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
           </p>
           <h3 className="mt-3 text-2xl font-semibold">No photos here yet.</h3>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-muted">
-            Upload photos with the {activeCategory} category selected and they
-            will appear here.
+            Upload photos with the {activeCategory} tag selected and they will
+            appear here.
           </p>
         </div>
       ) : null}

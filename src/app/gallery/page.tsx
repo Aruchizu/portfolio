@@ -24,8 +24,8 @@ export default async function GalleryPage() {
             Published frames, sorted for inspection.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
-            Use the collection filters to move between aviation, landscape, and
-            car photography. Featured frames still power the homepage hero.
+            Use the collection filters to move between Eroplano, Tanawin,
+            Kotse, and Tao. Featured frames still power the homepage hero.
           </p>
         </div>
         <PhotoGrid photos={photos} />

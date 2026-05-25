@@ -1,6 +1,11 @@
 import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
-import { PHOTO_CATEGORIES, type PhotoCategory, type PhotoRecord } from "./photos";
+import {
+  DEFAULT_PHOTO_CATEGORY,
+  normalizePhotoCategory,
+  type PhotoCategory,
+  type PhotoRecord,
+} from "./photos";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -99,19 +104,17 @@ function isUnhelpfulTitle(title: string): boolean {
 function getCategoryFromResource(resource: CloudinaryResource): PhotoCategory {
   const contextCategory = resource.context?.custom?.category;
 
-  if (PHOTO_CATEGORIES.includes(contextCategory as PhotoCategory)) {
-    return contextCategory as PhotoCategory;
+  if (contextCategory) {
+    return normalizePhotoCategory(contextCategory);
   }
 
   const tagCategory = resource.tags
     ?.find((tag) => tag.startsWith("category-"))
     ?.replace("category-", "");
 
-  const matchedCategory = PHOTO_CATEGORIES.find(
-    (category) => category.toLowerCase() === tagCategory,
-  );
-
-  return matchedCategory ?? "Aviation";
+  return tagCategory
+    ? normalizePhotoCategory(tagCategory)
+    : DEFAULT_PHOTO_CATEGORY;
 }
 
 export async function uploadPhotoToCloudinary(

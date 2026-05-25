@@ -4,7 +4,11 @@ import { ImagePlus, Loader2, Trash2, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-import { PHOTO_CATEGORIES, type PhotoRecord } from "@/lib/photos";
+import {
+  DEFAULT_PHOTO_CATEGORY,
+  PHOTO_CATEGORIES,
+  type PhotoRecord,
+} from "@/lib/photos";
 
 type AdminUploadFormProps = {
   photos: PhotoRecord[];
@@ -124,16 +128,15 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
           <select
             name="category"
             className="h-12 w-full rounded border border-line px-4 outline-none focus:border-austrian-red"
-            defaultValue="Aviation"
+            defaultValue={DEFAULT_PHOTO_CATEGORY}
           >
             {PHOTO_CATEGORIES.map((category) => (
               <option key={category}>{category}</option>
             ))}
           </select>
           <p className="-mt-2 text-xs leading-5 text-muted">
-            Category applies to every selected photo in this batch. Choose Cars
-            before uploading car photos, Landscape for scenery, or Aviation for
-            aircraft.
+            Tag applies to every selected photo in this batch. Choose Eroplano,
+            Tanawin, Kotse, or Tao before uploading.
           </p>
           <input
             name="location"

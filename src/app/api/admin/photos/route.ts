@@ -5,7 +5,11 @@ import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import { hasCloudinaryConfig, uploadPhotoToCloudinary } from "@/lib/cloudinary";
 import { createPhoto } from "@/lib/photo-service";
-import { PHOTO_CATEGORIES, parsePhotoPayload, type PhotoCategory } from "@/lib/photos";
+import {
+  DEFAULT_PHOTO_CATEGORY,
+  normalizePhotoCategory,
+  parsePhotoPayload,
+} from "@/lib/photos";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -63,12 +67,10 @@ export async function POST(request: Request) {
     }
 
     const baseTitle = String(formData.get("title") ?? "").trim();
-    const rawCategory = String(formData.get("category") ?? "Aviation");
-    const category: PhotoCategory = PHOTO_CATEGORIES.includes(
-      rawCategory as PhotoCategory,
-    )
-      ? (rawCategory as PhotoCategory)
-      : "Aviation";
+    const rawCategory = String(
+      formData.get("category") ?? DEFAULT_PHOTO_CATEGORY,
+    );
+    const category = normalizePhotoCategory(rawCategory);
 
     const metadataBase = {
       caption: String(formData.get("caption") ?? "").trim(),
@@ -82,7 +84,7 @@ export async function POST(request: Request) {
     const photos = [];
 
     for (const [index, file] of files.entries()) {
-      const categoryLabel = String(metadataBase.category || "Aviation");
+      const categoryLabel = String(metadataBase.category || DEFAULT_PHOTO_CATEGORY);
       const title =
         files.length === 1
           ? baseTitle || `${categoryLabel} Photo`
@@ -94,7 +96,7 @@ export async function POST(request: Request) {
       const upload = await uploadPhotoToCloudinary(file, {
         title,
         caption: metadataBase.caption,
-        category: metadataBase.category as never,
+        category: metadataBase.category,
         camera: metadataBase.camera,
         location: metadataBase.location,
         isFeatured: metadataBase.isFeatured && index === 0,
