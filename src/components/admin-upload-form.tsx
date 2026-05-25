@@ -4,6 +4,7 @@ import { ImagePlus, Loader2, Trash2, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
+import { getResponseErrorMessage } from "@/lib/http";
 import {
   DEFAULT_PHOTO_CATEGORY,
   PHOTO_CATEGORIES,
@@ -14,6 +15,44 @@ type AdminUploadFormProps = {
   photos: PhotoRecord[];
 };
 
+const MAX_UPLOAD_FILE_SIZE_BYTES = 4 * 1024 * 1024;
+
+function formatFileSize(bytes: number): string {
+  return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
+}
+
+function getOversizedFile(files: File[]): File | undefined {
+  return files.find((file) => file.size > MAX_UPLOAD_FILE_SIZE_BYTES);
+}
+
+function copyMetadata(formData: FormData, file: File, index: number, total: number) {
+  const uploadData = new FormData();
+  const baseTitle = String(formData.get("title") ?? "").trim();
+  const category = String(formData.get("category") ?? DEFAULT_PHOTO_CATEGORY);
+  const fallbackTitle = `${category} Photo`;
+  const title =
+    total === 1
+      ? baseTitle
+      : `${baseTitle || fallbackTitle} ${String(index + 1).padStart(2, "0")}`;
+
+  uploadData.append("files", file);
+  uploadData.append("title", title);
+  uploadData.append("caption", String(formData.get("caption") ?? ""));
+  uploadData.append("category", category);
+  uploadData.append("location", String(formData.get("location") ?? ""));
+  uploadData.append("camera", String(formData.get("camera") ?? ""));
+
+  if (formData.has("isFeatured") && index === 0) {
+    uploadData.append("isFeatured", "on");
+  }
+
+  if (formData.has("isPublished")) {
+    uploadData.append("isPublished", "on");
+  }
+
+  return uploadData;
+}
+
 export function AdminUploadForm({ photos }: AdminUploadFormProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -22,26 +61,46 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
   const [message, setMessage] = useState("");
 
   async function uploadPhoto(formData: FormData) {
+    const selectedFiles = formData
+      .getAll("files")
+      .filter((file): file is File => file instanceof File && file.size > 0);
+    const oversizedFile = getOversizedFile(selectedFiles);
+
+    if (oversizedFile) {
+      setMessage(
+        `${oversizedFile.name} is ${formatFileSize(
+          oversizedFile.size,
+        )}. Keep each photo under ${formatFileSize(
+          MAX_UPLOAD_FILE_SIZE_BYTES,
+        )} for Vercel uploads.`,
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     setMessage("");
 
     try {
-      const response = await fetch("/api/admin/photos", {
-        method: "POST",
-        body: formData,
-      });
+      let uploadCount = 0;
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error ?? "Upload failed.");
+      for (const [index, file] of selectedFiles.entries()) {
+        setMessage(`Uploading ${index + 1} of ${selectedFiles.length}...`);
+        const response = await fetch("/api/admin/photos", {
+          method: "POST",
+          body: copyMetadata(formData, file, index, selectedFiles.length),
+        });
+
+        if (!response.ok) {
+          throw new Error(await getResponseErrorMessage(response));
+        }
+
+        await response.json();
+        uploadCount += 1;
       }
 
-      const data = await response.json();
       setFiles([]);
       setMessage(
-        `${data.photos?.length ?? 1} photo${
-          (data.photos?.length ?? 1) === 1 ? "" : "s"
-        } uploaded and saved.`,
+        `${uploadCount} photo${uploadCount === 1 ? "" : "s"} uploaded and saved.`,
       );
       router.refresh();
     } catch (error) {
@@ -58,8 +117,7 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      setMessage(data.error ?? "Delete failed.");
+      setMessage(await getResponseErrorMessage(response));
       return;
     }
 
@@ -84,7 +142,7 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
           <ImagePlus className="mb-4 text-austrian-red" size={32} />
           <p className="font-semibold">Drop a photo here</p>
           <p className="mt-2 text-sm text-muted">
-            Upload one or many JPG, PNG, or WebP files. Keep each under 10MB.
+            Upload one or many JPG, PNG, or WebP files. Keep each under 4MB.
           </p>
           <input
             ref={inputRef}
