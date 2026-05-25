@@ -30,7 +30,8 @@ export default async function Home() {
             OS 01 / Austrian visual approach
           </p>
           <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.04] text-foreground sm:text-6xl lg:text-8xl">
-            Aviation light, framed with restraint.
+            Oh sinta, tayo&apos;y di man itinadhana. Iyong alaala ay laging
+            nasa aking memorya
           </h1>
           <p className="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
             A photography portfolio for aircraft, landscapes, and cars with a
