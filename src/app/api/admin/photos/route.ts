@@ -4,7 +4,6 @@ import { ZodError } from "zod";
 
 import { authOptions } from "@/lib/auth";
 import { hasCloudinaryConfig, uploadPhotoToCloudinary } from "@/lib/cloudinary";
-import { hasMongoConfig } from "@/lib/mongodb";
 import { createPhoto } from "@/lib/photo-service";
 import { parsePhotoPayload } from "@/lib/photos";
 
@@ -18,11 +17,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  if (!hasMongoConfig() || !hasCloudinaryConfig()) {
+  if (!hasCloudinaryConfig()) {
     return NextResponse.json(
       {
-        error:
-          "MONGODB_URI and Cloudinary environment variables are required for uploads.",
+        error: "Cloudinary environment variables are required for uploads.",
       },
       { status: 500 },
     );
@@ -47,15 +45,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const upload = await uploadPhotoToCloudinary(file);
-    const payload = parsePhotoPayload({
-      title: formData.get("title"),
-      caption: formData.get("caption") ?? "",
+    const metadata = {
+      title: String(formData.get("title") ?? "").trim(),
+      caption: String(formData.get("caption") ?? "").trim(),
       category: formData.get("category"),
-      camera: formData.get("camera") ?? "",
-      location: formData.get("location") ?? "",
+      camera: String(formData.get("camera") ?? "").trim() || undefined,
+      location: String(formData.get("location") ?? "").trim() || undefined,
       isFeatured: formData.has("isFeatured"),
       isPublished: formData.has("isPublished"),
+    };
+
+    const upload = await uploadPhotoToCloudinary(file, {
+      title: metadata.title,
+      caption: metadata.caption,
+      category: metadata.category as never,
+      camera: metadata.camera,
+      location: metadata.location,
+      isFeatured: metadata.isFeatured,
+      isPublished: metadata.isPublished,
+    });
+    const payload = parsePhotoPayload({
+      ...metadata,
       imageUrl: upload.secure_url,
       cloudinaryPublicId: upload.public_id,
       width: upload.width,

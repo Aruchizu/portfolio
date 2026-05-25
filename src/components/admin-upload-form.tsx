@@ -44,7 +44,7 @@ export function AdminUploadForm({ photos }: AdminUploadFormProps) {
 
   async function deletePhoto(id: string) {
     setMessage("");
-    const response = await fetch(`/api/admin/photos/${id}`, {
+    const response = await fetch(`/api/admin/photos/${encodeURIComponent(id)}`, {
       method: "DELETE",
     });
 

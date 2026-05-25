@@ -1,5 +1,6 @@
 import { ObjectId, type Document, type WithId } from "mongodb";
 
+import { deleteCloudinaryAsset, getCloudinaryPhotos } from "./cloudinary";
 import { hasMongoConfig, getPortfolioDb } from "./mongodb";
 import type { PhotoPayload, PhotoRecord } from "./photos";
 import { getPublicPhotos, parsePhotoPayload } from "./photos";
@@ -32,7 +33,7 @@ async function photosCollection() {
 
 export async function getAllPhotos(): Promise<PhotoRecord[]> {
   if (!hasMongoConfig()) {
-    return [];
+    return getCloudinaryPhotos();
   }
 
   const collection = await photosCollection();
@@ -43,7 +44,7 @@ export async function getAllPhotos(): Promise<PhotoRecord[]> {
 
 export async function getPublishedPhotos(): Promise<PhotoRecord[]> {
   if (!hasMongoConfig()) {
-    return [];
+    return getPublicPhotos(await getCloudinaryPhotos());
   }
 
   const collection = await photosCollection();
@@ -58,6 +59,16 @@ export async function getPublishedPhotos(): Promise<PhotoRecord[]> {
 export async function createPhoto(payload: PhotoPayload): Promise<PhotoRecord> {
   const parsed = parsePhotoPayload(payload);
   const now = new Date();
+
+  if (!hasMongoConfig()) {
+    return {
+      id: parsed.cloudinaryPublicId,
+      ...parsed,
+      createdAt: now,
+      updatedAt: now,
+    };
+  }
+
   const collection = await photosCollection();
   const result = await collection.insertOne({
     ...parsed,
@@ -74,6 +85,12 @@ export async function createPhoto(payload: PhotoPayload): Promise<PhotoRecord> {
 }
 
 export async function deletePhoto(id: string): Promise<PhotoRecord | null> {
+  if (!hasMongoConfig()) {
+    const publicId = decodeURIComponent(id);
+    await deleteCloudinaryAsset(publicId);
+    return null;
+  }
+
   if (!ObjectId.isValid(id)) {
     return null;
   }

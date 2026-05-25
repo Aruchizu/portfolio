@@ -22,7 +22,7 @@ export async function DELETE(
   const deleted = await deletePhoto(id);
 
   if (!deleted) {
-    return NextResponse.json({ error: "Photo not found." }, { status: 404 });
+    return NextResponse.json({ deleted: true });
   }
 
   await deleteCloudinaryAsset(deleted.cloudinaryPublicId);
