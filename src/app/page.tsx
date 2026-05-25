@@ -34,8 +34,9 @@ export default async function Home() {
             nasa aking memorya
           </h1>
           <p className="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
-            A photography portfolio for eroplano, tanawin, kotse, and tao with
-            a clean upload workflow behind the scenes.
+            Sabi nga nila, ang isang pangyayari ay pansamantala lamang -- pero
+            para sa isang katulad ko ang mga ito ay mga bagay na hindi ko
+            hahayaang makalimutan na lamang.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
