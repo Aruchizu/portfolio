@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowUpRight, Download, ImagePlus, Mail } from "lucide-react";
 
 import { PhotoGrid } from "@/components/photo-grid";
+import { InstagramPhoneMockup } from "@/components/instagram-phone-mockup";
 import { SectionLabel } from "@/components/section-label";
 import { SiteHeader } from "@/components/site-header";
 import { getPublishedPhotos } from "@/lib/photo-service";
@@ -10,6 +11,9 @@ import {
   ABOUT_SKILLS,
   CONTACT_EMAIL,
   CV_DOWNLOAD_PATH,
+  INSTAGRAM_EMBED_HTML,
+  INSTAGRAM_PROFILE_URL,
+  INSTAGRAM_USERNAME,
   PROFILE_HIGHLIGHTS,
   PROFILE_SUMMARY,
 } from "@/lib/profile";
@@ -125,10 +129,10 @@ export default async function Home() {
 
       <section
         id="about"
-        className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.72fr_1.28fr]"
+        className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] lg:items-center"
       >
         <SectionLabel index="03" label="about" />
-        <div className="min-w-0">
+        <div className="min-w-0 lg:col-start-1">
           <h2 className="text-3xl font-semibold sm:text-5xl">
             Behind the lens, there is design discipline too.
           </h2>
@@ -150,40 +154,37 @@ export default async function Home() {
               Inquire <Mail size={17} />
             </a>
           </div>
-        </div>
 
-        <div className="grid gap-8 border-t border-line pt-8 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-          <div>
-            <p className="mono-label text-xs uppercase text-austrian-red">
-              current profile
-            </p>
-            <div className="mt-4 grid gap-3">
+          <div className="mt-8 border-t border-line pt-6">
+            <div className="grid gap-3 sm:grid-cols-3">
               {PROFILE_HIGHLIGHTS.map((highlight) => (
                 <p
                   key={highlight}
-                  className="border-b border-line pb-3 text-lg font-semibold text-foreground"
+                  className="text-sm font-semibold leading-6 text-foreground"
                 >
                   {highlight}
                 </p>
               ))}
             </div>
-          </div>
-
-          <div>
-            <p className="mono-label text-xs uppercase text-austrian-red">
-              beyond the lens
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-5 flex flex-wrap gap-2">
               {ABOUT_SKILLS.map((skill) => (
                 <span
                   key={skill}
-                  className="rounded border border-line bg-white px-3 py-2 text-sm font-semibold text-foreground"
+                  className="rounded border border-line bg-white px-3 py-2 text-xs font-semibold text-foreground"
                 >
                   {skill}
                 </span>
               ))}
             </div>
           </div>
+        </div>
+
+        <div className="lg:col-start-2 lg:row-span-2">
+          <InstagramPhoneMockup
+            embedHtml={INSTAGRAM_EMBED_HTML}
+            profileUrl={INSTAGRAM_PROFILE_URL}
+            username={INSTAGRAM_USERNAME}
+          />
         </div>
       </section>
 
