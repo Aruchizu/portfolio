@@ -72,7 +72,7 @@ export function InstagramPhoneMockup({
           unoptimized
           className="pointer-events-none absolute inset-0 z-0 h-full w-full select-none"
         />
-        <div className="absolute inset-x-[8.5%] bottom-[5.3%] top-[5.2%] z-10 overflow-hidden rounded-[2rem] bg-white text-foreground shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]">
+        <div className="absolute inset-x-[7.6%] bottom-[2.2%] top-[4.8%] z-10 overflow-hidden rounded-[2.15rem] bg-white text-foreground shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]">
           <div className="flex h-full flex-col">
             <div className="flex h-20 shrink-0 items-end justify-between border-b border-line px-4 pb-3">
               <div>
