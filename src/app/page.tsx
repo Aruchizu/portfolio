@@ -125,10 +125,10 @@ export default async function Home() {
 
       <section
         id="about"
-        className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.72fr_1.28fr]"
+        className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.92fr_1.08fr]"
       >
-        <SectionLabel index="03" label="about" />
         <div className="min-w-0">
+          <SectionLabel index="03" label="about" />
           <h2 className="text-3xl font-semibold sm:text-5xl">
             Behind the lens, there is design discipline too.
           </h2>
@@ -153,6 +153,24 @@ export default async function Home() {
         </div>
 
         <div className="grid gap-8 border-t border-line pt-8 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+          <div>
+            <p className="mono-label text-xs uppercase text-austrian-red">
+              demo reel
+            </p>
+            <div className="mt-4 flex justify-center rounded bg-black p-3 shadow-sm sm:p-4">
+              <video
+                className="max-h-[560px] w-full max-w-[320px] rounded object-contain"
+                controls
+                playsInline
+                preload="metadata"
+                aria-label="Alfonso Raphael Candia demo reel"
+              >
+                <source src="/demo-reel-46fa95cf.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
           <div>
             <p className="mono-label text-xs uppercase text-austrian-red">
               current profile
