@@ -5,6 +5,7 @@ import {
   CONTACT_EMAIL,
   CV_DOWNLOAD_PATH,
   INSTAGRAM_EMBED_HTML,
+  INSTAGRAM_PHONE_FRAME_PATH,
   INSTAGRAM_PROFILE_URL,
   INSTAGRAM_USERNAME,
   PROFILE_HIGHLIGHTS,
@@ -24,6 +25,9 @@ describe("profile content", () => {
     expect(INSTAGRAM_USERNAME).toBe("don.fnso");
     expect(INSTAGRAM_PROFILE_URL).toBe("https://www.instagram.com/don.fnso/");
     expect(INSTAGRAM_EMBED_HTML).toBe("");
+    expect(INSTAGRAM_PHONE_FRAME_PATH).toBe(
+      "/IPhone_17_Pro_Max_Vector.svg",
+    );
   });
 
   it("keeps the about copy focused on photography and other creative skills", () => {

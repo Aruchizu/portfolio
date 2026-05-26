@@ -1,16 +1,19 @@
 "use client";
 
 import { ArrowUpRight, Camera } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type InstagramPhoneMockupProps = {
   embedHtml: string;
+  phoneFramePath: string;
   profileUrl: string;
   username: string;
 };
 
 export function InstagramPhoneMockup({
   embedHtml,
+  phoneFramePath,
   profileUrl,
   username,
 }: InstagramPhoneMockupProps) {
@@ -55,12 +58,23 @@ export function InstagramPhoneMockup({
   }, [hasEmbed, embedHtml]);
 
   return (
-    <div className="mx-auto w-full max-w-sm lg:ml-auto" aria-label="Instagram profile preview">
-      <div className="relative rounded-[2.8rem] bg-[#09090b] p-2.5 shadow-[0_28px_80px_rgba(0,0,0,0.24),inset_0_0_0_1px_rgba(255,255,255,0.16)]">
-        <div className="absolute left-1/2 top-3 z-20 h-7 w-28 -translate-x-1/2 rounded-b-2xl rounded-t-sm bg-[#09090b]" />
-        <div className="h-[620px] overflow-hidden rounded-[2.15rem] bg-white text-foreground">
+    <div
+      className="mx-auto w-full max-w-[330px] lg:ml-auto"
+      aria-label="Instagram profile preview"
+    >
+      <div className="relative aspect-[79.2/163.5] drop-shadow-[0_28px_70px_rgba(0,0,0,0.26)]">
+        <Image
+          src={phoneFramePath}
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="330px"
+          unoptimized
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full select-none"
+        />
+        <div className="absolute inset-x-[8.5%] bottom-[5.3%] top-[5.2%] z-10 overflow-hidden rounded-[2rem] bg-white text-foreground shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]">
           <div className="flex h-full flex-col">
-            <div className="flex h-14 shrink-0 items-center justify-between border-b border-line px-5 pt-1">
+            <div className="flex h-20 shrink-0 items-end justify-between border-b border-line px-4 pb-3">
               <div>
                 <p className="mono-label text-[10px] uppercase text-austrian-red">
                   live profile
@@ -70,7 +84,7 @@ export function InstagramPhoneMockup({
               <Camera className="text-austrian-red" size={20} />
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 [scrollbar-width:thin]">
+            <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4 [scrollbar-width:thin]">
               {hasEmbed ? (
                 <div>
                   <div

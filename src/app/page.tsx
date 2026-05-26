@@ -12,6 +12,7 @@ import {
   CONTACT_EMAIL,
   CV_DOWNLOAD_PATH,
   INSTAGRAM_EMBED_HTML,
+  INSTAGRAM_PHONE_FRAME_PATH,
   INSTAGRAM_PROFILE_URL,
   INSTAGRAM_USERNAME,
   PROFILE_HIGHLIGHTS,
@@ -182,6 +183,7 @@ export default async function Home() {
         <div className="lg:col-start-2 lg:row-span-2">
           <InstagramPhoneMockup
             embedHtml={INSTAGRAM_EMBED_HTML}
+            phoneFramePath={INSTAGRAM_PHONE_FRAME_PATH}
             profileUrl={INSTAGRAM_PROFILE_URL}
             username={INSTAGRAM_USERNAME}
           />

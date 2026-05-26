@@ -8,6 +8,8 @@ export const INSTAGRAM_PROFILE_URL = "https://www.instagram.com/don.fnso/";
 
 export const INSTAGRAM_EMBED_HTML = "";
 
+export const INSTAGRAM_PHONE_FRAME_PATH = "/IPhone_17_Pro_Max_Vector.svg";
+
 export const PROFILE_SUMMARY =
   "I am Alfonso Raphael Candia, a multidisciplinary creative from Valenzuela City focused on photography, design, and social media visuals. My work started around content, posters, layouts, and image selection, which shaped how I frame eroplano, tanawin, kotse, and tao today: clean, intentional, and built around strong visual rhythm. Outside photography, I also work with Figma, Canva, Lightroom, Procreate, and social media content management.";
 
