@@ -27,7 +27,7 @@ export default async function Home() {
       <section className="mx-auto grid w-full max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-14 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[0.86fr_1.14fr] lg:gap-10">
         <div className="pt-4 sm:pt-8 lg:pt-10">
           <p className="mono-label text-xs uppercase text-austrian-red">
-            OS 01 / Austrian visual approach
+            Alaala ni Candia / Portfolio
           </p>
           <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.04] text-foreground sm:text-6xl lg:text-8xl">
             Oh sinta, tayo&apos;y di man itinadhana. Iyong alaala ay laging
