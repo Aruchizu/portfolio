@@ -125,7 +125,7 @@ export default async function Home() {
 
       <section
         id="about"
-        className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.72fr_1.28fr]"
+        className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[0.78fr_1.22fr]"
       >
         <SectionLabel index="03" label="about" />
         <div className="min-w-0">
@@ -153,19 +153,43 @@ export default async function Home() {
         </div>
 
         <div className="grid gap-8 border-t border-line pt-8 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-          <div>
-            <p className="mono-label text-xs uppercase text-austrian-red">
-              current profile
-            </p>
-            <div className="mt-4 grid gap-3">
-              {PROFILE_HIGHLIGHTS.map((highlight) => (
-                <p
-                  key={highlight}
-                  className="border-b border-line pb-3 text-lg font-semibold text-foreground"
+          <div className="grid gap-6 xl:grid-cols-[1.18fr_0.82fr]">
+            <div className="min-w-0">
+              <p className="mono-label text-xs uppercase text-austrian-red">
+                demo reel
+              </p>
+              <div className="mt-4 overflow-hidden rounded bg-black">
+                <video
+                  className="aspect-video w-full object-cover"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  aria-label="Alfonso Raphael Candia demo reel"
                 >
-                  {highlight}
-                </p>
-              ))}
+                  <source src="/demo-reel.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-muted">
+                A quick reel of motion work and visual direction, placed beside
+                the portfolio profile so the page shows both stills and pacing.
+              </p>
+            </div>
+
+            <div className="min-w-0">
+              <p className="mono-label text-xs uppercase text-austrian-red">
+                current profile
+              </p>
+              <div className="mt-4 grid gap-3">
+                {PROFILE_HIGHLIGHTS.map((highlight) => (
+                  <p
+                    key={highlight}
+                    className="border-b border-line pb-3 text-base font-semibold text-foreground sm:text-lg"
+                  >
+                    {highlight}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
 
