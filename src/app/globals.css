@@ -46,3 +46,40 @@ body {
   background: rgba(247, 245, 242, 0.86);
   backdrop-filter: blur(18px);
 }
+
+@layer components {
+  .brand-pattern-soft {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .brand-pattern-soft::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    content: "";
+    background-image: url("/brand-pattern.png");
+    background-position: right top;
+    background-size: 260px auto;
+    mix-blend-mode: multiply;
+    opacity: 0.045;
+  }
+
+  .brand-pattern-soft > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-pattern-button {
+    background-image:
+      linear-gradient(rgba(200, 16, 46, 0.8), rgba(200, 16, 46, 0.8)),
+      url("/brand-pattern.png");
+    background-position: center;
+    background-size:
+      auto,
+      180px auto;
+    background-blend-mode: normal, multiply;
+  }
+}

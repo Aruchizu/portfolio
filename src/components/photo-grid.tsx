@@ -31,7 +31,7 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
 
   if (photos.length === 0) {
     return (
-      <div className="rounded border border-dashed border-line bg-white px-5 py-12 text-center sm:px-6 sm:py-16">
+      <div className="brand-pattern-soft rounded border border-dashed border-line bg-white px-5 py-12 text-center sm:px-6 sm:py-16">
         <p className="mono-label text-xs uppercase text-austrian-red">
           {"// empty gallery"}
         </p>
@@ -63,7 +63,7 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
             onClick={() => setActiveCategory(category)}
             className={`mono-label flex h-10 shrink-0 items-center gap-2 rounded border px-4 text-xs uppercase transition ${
               activeCategory === category
-                ? "border-austrian-red bg-austrian-red text-white"
+                ? "brand-pattern-button border-austrian-red bg-austrian-red text-white"
                 : "border-line bg-white text-muted hover:border-austrian-red hover:text-austrian-red"
             }`}
           >
@@ -76,7 +76,7 @@ export function PhotoGrid({ photos }: PhotoGridProps) {
       </div>
 
       {visiblePhotos.length === 0 ? (
-        <div className="rounded border border-line bg-white px-5 py-10 text-center">
+        <div className="brand-pattern-soft rounded border border-line bg-white px-5 py-10 text-center">
           <p className="mono-label text-xs uppercase text-austrian-red">
             {activeCategory}
           </p>

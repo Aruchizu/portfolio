@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { BrandMark } from "@/components/brand-mark";
+
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/gallery", label: "Gallery" },
@@ -9,12 +11,10 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="nav-blur sticky top-0 z-40 border-b border-line">
+    <header className="brand-pattern-soft nav-blur sticky top-0 z-40 border-b border-line">
       <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="group flex items-center gap-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded bg-austrian-red text-sm font-semibold text-white">
-            A
-          </span>
+          <BrandMark priority />
           <span className="mono-label text-sm uppercase text-foreground">
             Apron / Photo
           </span>

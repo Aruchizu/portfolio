@@ -1,9 +1,11 @@
 "use client";
 
-import { Lock, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+
+import { BrandMark } from "@/components/brand-mark";
 
 function LoginFormInner() {
   const router = useRouter();
@@ -38,11 +40,9 @@ function LoginFormInner() {
   return (
     <form
       onSubmit={onSubmit}
-      className="w-full max-w-sm rounded border border-line bg-white p-5 sm:p-6"
+      className="brand-pattern-soft w-full max-w-sm rounded border border-line bg-white p-5 sm:p-6"
     >
-      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded bg-austrian-red text-white">
-        <Lock size={20} />
-      </div>
+      <BrandMark className="mb-6 h-12 w-12" priority />
       <p className="mono-label text-xs uppercase text-austrian-red">
         {"// admin clearance"}
       </p>
